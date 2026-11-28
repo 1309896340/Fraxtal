@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fraxtal
+    volumes:
+      - fraxtal-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fraxtal"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    ports:
+      - "35432:5432" # 仅供宿主机本地开发连接（生产部署可移除；避开宿主机已占用的 5432）
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/fraxtal
+      # 生产部署务必通过环境变量覆盖为随机长字符串
+      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-0123456789abcdef-compose}
+    ports:
+      - "3400:3000" # 宿主机 3400（3000 已被其他服务占用）；容器内仍是 3000
+
+volumes:
+  fraxtal-pgdata:
