@@ -141,7 +141,7 @@ LLM ──tool call──> 原始 JSON ──> zod.parse
 **结论**：email + 密码注册登录，JWT 维持状态，httpOnly Cookie 传输。
 
 - 密码哈希：**argon2id**（非 bcrypt）；
-- JWT 库：**jose**（Edge runtime 兼容，middleware 可用）；
+- JWT 库：**jose**（Edge runtime 兼容；Next.js 16 的 proxy 文件约定默认 Node.js runtime，jose 通用）；
 - 双 token：access **15min** + refresh **7d 旋转**（旧 refresh 一次性作废）；
 - **重放检测**：检测到已旋转的 refresh 被重放 → 全部会话强制下线；
 - 存储：httpOnly + SameSite=Strict Cookie（XSS 免疫，代价是 CSRF 需 SameSite 缓解）。
@@ -205,7 +205,7 @@ GLM / DeepSeek / OpenAI / Ollama 本地模型全在此协议下，零适配层�
 
 ```
 src/
-├── middleware.ts                # JWT access 校验（jose · Edge）
+├── proxy.ts                      # JWT access 校验（Next.js 16：原 middleware.ts 约定已更名，默认 Node.js runtime）
 ├── app/                         # 路由层：page/route/layout
 │   ├── (auth)/{login,register}/ # 认证页（独立布局）
 │   ├── (main)/projects/[projectId]/page.tsx   # 画布工作区
@@ -238,7 +238,7 @@ src/
 
 **五条结构原则**：
 1. **双端边界**：`lib/`（双端纯逻辑）→ `server/`（仅服务端），单向依赖，ESLint 强制 import 边界；
-2. **Route Handler 是薄壳**：认证 → zod 解析 → 调 service → 返回；编排在 `server/services/`；
+2. **Route Handler 是薄壳**：认证 → zod 解析 → 调 service → 返回；编排在 `server/services/`（页面路由保护用 Next.js 16 的 `proxy.ts`，原 middleware 约定已更名）；
 3. **领域模型与派生视图分离**：树遍历/图派生是纯函数，住 `lib/tree/`，测试密度最高；
 4. **API 动作语义**：URL 映射五阶段动作（questions/options/decide/compile），非教科书 CRUD；
 5. **域内就近**：canvas 与 question-panel 是两个组件家族（画布紧凑态 vs 面板完整态）。
