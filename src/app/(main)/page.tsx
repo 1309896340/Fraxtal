@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { UserBadge } from "@/components/auth/user-badge";
+import { NewProjectModal } from "@/components/projects/new-project-modal";
+import { ProjectList } from "@/components/projects/project-list";
 
 export const metadata: Metadata = { title: "项目 · Fraxtal" };
 
@@ -16,11 +18,12 @@ export default function ProjectsPage() {
           <LogoutButton />
         </div>
       </header>
-      <section className="mx-auto max-w-3xl p-6">
-        <h1 className="mb-2 text-xl font-semibold text-neutral-900">我的项目</h1>
-        <div className="rounded-xl border border-dashed border-neutral-300 bg-white p-10 text-center text-sm text-neutral-500">
-          项目列表即将上线——画布与决策树能力将在后续变更中交付
+      <section className="mx-auto w-full max-w-5xl p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-xl font-semibold text-neutral-900">我的项目</h1>
+          <NewProjectModal />
         </div>
+        <ProjectList />
       </section>
     </main>
   );

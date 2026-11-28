@@ -48,6 +48,7 @@ pnpm test      # Vitest 单测 / 集成测试
 | --- | --- | --- |
 | `DATABASE_URL` | ✅ | Postgres 连接串 |
 | `JWT_SECRET` | ✅ | 会话签名密钥，至少 32 字符，生产务必随机生成 |
+| `NEXT_PUBLIC_DATA_BACKEND` | — | 前端数据后端切换：`mock`（默认，localStorage 持久化）/ `real`（阶段二 HTTP 后端，当前为空壳占位） |
 | `LLM_*` | 后续 | LLM 接入配置（画布/LLM 变更启用），见 `.env.example` |
 
 ## 工程规范
