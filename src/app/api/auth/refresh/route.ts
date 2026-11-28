@@ -35,12 +35,12 @@ export async function POST(request: NextRequest) {
       ),
       { status: 401 },
     );
-    clearAuthCookies(response);
+    clearAuthCookies(request, response);
     return response;
   }
 
   const response = NextResponse.json({ ok: true, userId: result.userId });
-  setAuthCookies(response, {
+  setAuthCookies(request, response, {
     accessToken: result.accessToken,
     refreshToken: result.refreshToken,
   });

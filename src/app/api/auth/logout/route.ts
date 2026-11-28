@@ -13,6 +13,6 @@ export async function POST(request: NextRequest) {
     await logoutSession(refreshToken);
   }
   const response = NextResponse.json({ ok: true });
-  clearAuthCookies(response);
+  clearAuthCookies(request, response);
   return response;
 }

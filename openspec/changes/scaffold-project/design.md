@@ -31,7 +31,7 @@
 - **JWT**：`jose`。`src/proxy.ts`（Next.js 16：原 middleware 约定已更名为 proxy，默认 Node.js runtime）只做 access token 的签名与过期校验（无 DB 查询，快）；API 层统一 helper 再做完整校验。
 - **refresh 旋转的服务端状态**：重放防护（spec 要求「重放 → 全端下线」）无法用纯无状态 JWT 实现，因此新增 `refresh_tokens` 表：存 token 的 SHA-256 哈希（不存原 token）、`user_id`、`expires_at`、`revoked_at`、`replaced_by`。检测到已旋转 token 复用时，撤销该用户全部记录。
 - **session_version 全端下线机制**：`users.session_version`（整数，默认 0）写入 access token 载荷（`sv` 声明）。检测到 refresh 重放时该值 +1，使该用户所有已签发 access token 立即失效。校验分两级：middleware（Edge）只验签名与过期（快路径，页面路由）；API 层统一 helper 完整校验（签名 + 过期 + 比对 DB 中的 session_version），保证 spec 的「所有已登录端后续请求均返回 401」。
-- **Cookie**：`httpOnly` + `SameSite=Strict` + `Secure`（生产）；名称 `frx_access` / `frx_refresh`。
+- **Cookie**：`httpOnly` + `SameSite=Strict`；`Secure` 按请求实际协议动态判定（HTTPS/反代 `X-Forwarded-Proto` → Secure；HTTP 直连 → 不带，否则浏览器拒存 Cookie 导致会话完全失效）；名称 `frx_access` / `frx_refresh`。
 
 ### D-3 数据层（D8 落地化）
 

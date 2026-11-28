@@ -8,7 +8,6 @@ import {
   registerUser,
 } from "@/server/auth/session";
 import { setAuthCookies } from "@/server/auth/cookies";
-
 /**
  * POST /api/auth/register
  * 成功：201 + 双会话 Cookie（注册即登录，spec「注册成功」场景）
@@ -55,6 +54,6 @@ export async function POST(request: NextRequest) {
     { user: { id: user.id, email: user.email } },
     { status: 201 },
   );
-  setAuthCookies(response, session);
+  setAuthCookies(request, response, session);
   return response;
 }

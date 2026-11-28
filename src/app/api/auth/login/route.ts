@@ -36,6 +36,6 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.json({
     user: { id: user.id, email: user.email },
   });
-  setAuthCookies(response, session);
+  setAuthCookies(request, response, session);
   return response;
 }

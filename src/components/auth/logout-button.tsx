@@ -22,7 +22,7 @@ export function LogoutButton() {
     <button
       onClick={logout}
       disabled={pending}
-      className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm transition hover:bg-neutral-100 disabled:opacity-50"
+      className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm text-neutral-900 transition hover:bg-neutral-100 disabled:opacity-50"
     >
       {pending ? "登出中…" : "登出"}
     </button>
